@@ -69,3 +69,4 @@ To test the trained YOLOv8 model locally or in Colab:
    results.show()
 ---
 ## Sample outputs
+![sample output1]()
