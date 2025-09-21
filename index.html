@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HackwithHyd – YOLO Object Detection</title>
+  <script type="module">
+    import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/+esm";
+
+    async function runPrediction() {
+      const fileInput = document.getElementById("imageInput");
+      const preview = document.getElementById("preview");
+      const outputImage = document.getElementById("outputImage");
+      const outputText = document.getElementById("outputText");
+
+      if (!fileInput.files.length) {
+        alert("Please upload an image first!");
+        return;
+      }
+
+      // Show preview
+      const file = fileInput.files[0];
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+
+      // Connect to Hugging Face Space
+      const client = await Client.connect("nikethanreddy/HackwithHyd");
+
+      // Run prediction
+      const result = await client.predict("/predict", {
+        image: file,
+      });
+
+      // Display results
+      const [processedImage, detections] = result.data;
+
+      outputImage.src = processedImage.url;
+      outputText.innerText = detections || "No objects detected.";
+    }
+
+    window.runPrediction = runPrediction;
+  </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2.2em;
+    }
+    p {
+      margin-bottom: 20px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      display: inline-block;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.3);
+    }
+    input[type="file"] {
+      margin: 20px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    button {
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #e68900;
+    }
+    .image-box {
+      margin-top: 20px;
+    }
+    img {
+      max-width: 100%;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+    #outputText {
+      margin-top: 15px;
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>HackwithHyd – YOLO Object Detection</h1>
+  <p>Upload an image, and watch YOLO detect objects in style.</p>
+  
+  <div class="card">
+    <input type="file" id="imageInput" accept="image/*">
+    <br>
+    <button onclick="runPrediction()">Run Detection</button>
+    
+    <div class="image-box">
+      <h3>Input Image:</h3>
+      <img id="preview" style="display:none;">
+      
+      <h3>Output Image:</h3>
+      <img id="outputImage">
+      
+      <h3>Detections:</h3>
+      <pre id="outputText"></pre>
+    </div>
+  </div>
+</body>
+</html>
