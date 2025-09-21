@@ -69,4 +69,5 @@ To test the trained YOLOv8 model locally or in Colab:
    results.show()
 ---
 ## Sample outputs
-![sample output1]()
+![sample output1](sampleoutputs/000000001_light_unclutter.jpg)
+![sample output2](sampleoutputs/000000001_vdark_clutter.jpg)
